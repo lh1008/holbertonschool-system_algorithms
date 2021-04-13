@@ -8,30 +8,41 @@
  */
 int rb_tree_is_valid(const rb_tree_t *tree)
 {
-	int black = 0;
+	int black, right, left;
 
-	if (tree == NULL || tree->color == RED)
+	black = right = left= 0;
+
+	if (tree == NULL)
 		return (0);
 
-	if (!tree)
+	if (tree->left != NULL)
+		left = rb_tree_is_valid(tree->left);
+	else
+		left = 1;
+	if (tree->right != NULL)
+		right = rb_tree_is_valid(tree->right);
+	else
+		right = 1;
+
+	if (right == left)
 	{
-		black = 1;
-		return (black);
+		black = right;
+		if (tree->color == BLACK)
+			black += 1;
 	}
+	else
+		black = 0;
+
+	if (tree->parent == NULL && tree->color != BLACK)
+		black = 0;
 
 	if (tree->color != RED && tree->color != BLACK)
-		return (0);
+		black = 0;
 
-	if (tree->color == RED)
-	{
-		if (tree->left && tree->left->color == RED)
-			return (0);
-		if (tree->right && tree->right->color == RED)
-			return (0);
-	}
+	if (tree->parent && tree->color == RED && tree->parent->color == RED)
+		black = 0;
 
-	if (tree->color == BLACK)
-		black += 1;
-
-	return (1);
+	if (tree->parent == NULL && black != 0)
+		return (1);
+	return (black);
 }
