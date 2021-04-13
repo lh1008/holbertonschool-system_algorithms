@@ -4,6 +4,25 @@
 #include <stdlib.h>
 #include <stddef.h>
 
+#define GETPARENT(node) ((node == NULL) ? NULL : node->parent)
+#define GETGRANDPARENT(node) GETPARENT(GETPARENT(node))
+#define GETSIBLING(node) \
+	(GETPARENT(node) ? \
+	((node == (GETPARENT(node)->left)) ? \
+	(GETPARENT(node)->right) : \
+	(GETPARENT(node)->left)) : \
+	NULL)
+#define GETUNCLE(node) GETSIBLING(GETPARENT(node))
+#define D_BLACK(node, succesor) \
+	((succesor == NULL || \
+	succesor->color == BLACK) && \
+	(node->color == BLACK))
+#define SIBLING_RED(sibling) \
+	((sibling->left && \
+	sibling->left == RED) || \
+	(sibling->right && \
+	sibling->right == RED))
+
 /**
  * enum rb_color_e - Possible color of a Red-Black tree
  *
@@ -38,5 +57,6 @@ typedef struct rb_tree_s
 
 rb_tree_t *rb_tree_node(rb_tree_t *parent, int value, rb_color_t color);
 int rb_tree_is_valid(const rb_tree_t *tree);
+rb_tree_t *rb_tree_insert(rb_tree_t **tree, int value);
 
 #endif /* _RB_TREES_H_ */
