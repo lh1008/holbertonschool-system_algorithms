@@ -1,26 +1,27 @@
 #include "rb_trees.h"
 
 /**
- * rotate - rote a segment of a Btree
+ * rotate - entry to rotate
+ * Desc: rotate function to rote a segment of a Btree
  * @node: node to rotate
- * @left_or_right: sense of the rotate (1 right, 0 left)
+ * @l_or_r: sense of the rotate (1 right, 0 left)
  * Return: nothing
  */
-void rotate(rb_tree_t *node, int left_or_right)
+void rotate(rb_tree_t *node, int l_or_r)
 {
 	rb_tree_t *rot_new = NULL, *parent = GETPARENT(node);
 
-	rot_new = left_or_right ? node->left : node->right;
-	if (left_or_right)
+	rot_new = l_or_r ? node->left : node->right;
+	if (l_or_r)
 	{
 		node->left = rot_new->right;
 		rot_new->right = node;
 		node->parent = rot_new;
 
-		/* Handle other child/parent pointers. */
+
 		if (node->left)
 			node->left->parent = node;
-		/* Initially n could be the root. */
+
 		if (parent)
 		{
 			if (node == parent->left)
@@ -35,10 +36,10 @@ void rotate(rb_tree_t *node, int left_or_right)
 		rot_new->left = node;
 		node->parent = rot_new;
 
-		/* Handle other child/parent pointers. */
+
 		if (node->right)
 			node->right->parent = node;
-		/* Initially n could be the root. */
+
 		if (parent)
 		{
 			if (node == parent->left)
@@ -51,7 +52,9 @@ void rotate(rb_tree_t *node, int left_or_right)
 }
 
 /**
- * insert_value_recursive - insert a value in a RED_BLACK tree recursively
+ * insert_value_recursive - entry to insert_value_recursive
+ * Desc: insert_value_recursive function to insert a value in a
+ * RED_BLACK tree recursively
  * @root: root node of the RED-BLACK tree
  * @value: number to be insert
  * Return: A pointer with the node inserted, NULL otherwise
@@ -89,8 +92,9 @@ rb_tree_t *insert_value_recursive(rb_tree_t *root, int value)
 }
 
 /**
- * repair_rb_tree - make back a RB Tree
- * @node: node where starting the fixing
+ * repair_rb_tree - entry to repair_rb_tree
+ * Desc: repair_rb_tree function to make back a RB Tree
+ * @node: node pointer
  * Return: Nothing
  */
 void repair_rb_tree(rb_tree_t *node)
@@ -135,8 +139,9 @@ void repair_rb_tree(rb_tree_t *node)
 }
 
 /**
- * rb_tree_insert - insert a given value in a Red_black tree
- * @tree: root of the binary tree
+ * rb_tree_insert - entry to rb_tree_insert
+ * Desc: rb_tree_insert function to insert a given value in a Red_black tree
+ * @tree: double pointer to root of the binary tree
  * @value: number to insert in the Red_black tree
  * Return: The pointer of the new node inserted on success, NULL otherwise
  */
