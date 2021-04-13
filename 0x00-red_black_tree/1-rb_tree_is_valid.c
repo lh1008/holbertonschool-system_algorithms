@@ -10,7 +10,7 @@ int rb_tree_is_valid(const rb_tree_t *tree)
 {
 	int black, right, left;
 
-	black = right = left= 0;
+	black = right = left = 0;
 
 	if (tree == NULL)
 		return (0);
