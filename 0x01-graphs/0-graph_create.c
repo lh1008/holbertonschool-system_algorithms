@@ -12,5 +12,9 @@ graph_t *graph_create(void)
 
 	graph_t = malloc(sizeof(graph_t));
 
-	return (graph_t);
+	if (graph_t == NULL)
+		return (NULL);
+	else
+		return (graph_t);
+
 }
