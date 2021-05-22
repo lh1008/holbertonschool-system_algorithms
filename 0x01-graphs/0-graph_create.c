@@ -8,4 +8,9 @@
  */
 graph_t *graph_create(void)
 {
+	struct graph_s *graph_t;
+
+	graph_t = malloc(sizeof(graph_t));
+
+	return (graph_t);
 }
