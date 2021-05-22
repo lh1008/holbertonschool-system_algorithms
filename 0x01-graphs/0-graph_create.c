@@ -14,7 +14,9 @@ graph_t *graph_create(void)
 
 	if (graph_t == NULL)
 		return (NULL);
-	else
-		return (graph_t);
+
+	graph_t->vertices = (struct vertex_s*)malloc(sizeof(struct vertex_s));
+
+	return (graph_t);
 
 }
