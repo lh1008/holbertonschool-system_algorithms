@@ -1,61 +1,67 @@
 #include "graphs.h"
 
 /**
- * depth - entry to depth
- * Desc: depth recursive function to find max depth using depth-first search
- * @vertex: vertex to search
- * @action: pointer to function to be called for each visited vertex
- * @visited: boolean
+ * debth - entry to debth
+ * Desc: debth function to traverse a graph
+ * using depth-first algorithm
+ * @v: pointer vertex node being visited
+ * @visited: array specifying if vertex has been visited
+ * @action: function pointer to be called for each visited vertex
  * @depth: current depth
- * @max_depth: max depth
- * Return: max_depth or 0 on failure
+ * @max_depth: max depth reached during traversal
  */
-void depth(vertex_t *vertex, void (*action)(const vertex_t *v, size_t depth),
-			int *visited, size_t depth, size_t *max_depth)
+
+size_t debth(vertex_t *vertex, int *visited,
+	 void (*action)(const vertex_t *v, size_t depth), size_t depth,
+	 size_t *max_depth)
 {
 	edge_t *edges;
 
-	if (!vertex || visited[vertex->index])
-		return;
+	if (visited[vertex->index])
+		return (depth - 1);
 
 	action(vertex, depth);
 	visited[vertex->index] = 1;
 
 	if (depth > *max_depth)
 		*max_depth = depth;
-	depth++;
+	++depth;
 
 	edges = vertex->edges;
 	while (edges)
 	{
-		dfs(edges->dest, action, visited, depth, max_depth);
+		debth(edges->dest, visited, action, depth, max_depth);
 		edges = edges->next;
 	}
+
+	return (*max_depth);
 }
 
 /**
  * depth_first_traverse - entry to depth first
- * Desc: depth_first_traverse function that goes through
- * a graph using depth-first algorithm
+ * Desc: depth_first_traverse function that goes
+ * through a graph using depth-first algorithm
  * @graph: pointer to graph to traverse
- * @v: const pointer to the visited vertex
- * @depth: depth of v, from the starting vertex
- * Return: return biggest vertex depth, or 0 in failure
+ * @action: pointer for each visited vertex
+ *    v: const pointer to the visited vertex
+ *    depth: depth of v
+ * Return: biggest vertex depth, or 0 on failure
  */
 size_t depth_first_traverse(const graph_t *graph,
 			    void (*action)(const vertex_t *v, size_t depth))
 {
-	int *seen;
+	int *visited;
 	size_t max_depth = 0;
 
 	if (!graph)
 		return (0);
 
-	if (graph->nb_vertices)
-	{
-		seen = calloc(graph->nb_vertices, sizeof(char));
-		dfs(graph->vertices, action, seen, 0, &max_depth);
-		free(seen);
-	}
+	visited = calloc(graph->nb_vertices, sizeof(*visited));
+	if (!visited)
+		return (0);
+
+	debth(graph->vertices, visited, action, 0, &max_depth);
+	free(visited);
+
 	return (max_depth);
 }
