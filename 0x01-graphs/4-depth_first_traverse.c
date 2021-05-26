@@ -11,14 +11,14 @@
  * @max_depth: max depth reached during traversal
  */
 
-size_t debth(vertex_t *vertex, int *visited,
+void debth(vertex_t *vertex, int *visited,
 	 void (*action)(const vertex_t *v, size_t depth), size_t depth,
 	 size_t *max_depth)
 {
 	edge_t *edges;
 
 	if (visited[vertex->index])
-		return (depth - 1);
+		return;
 
 	action(vertex, depth);
 	visited[vertex->index] = 1;
@@ -33,8 +33,6 @@ size_t debth(vertex_t *vertex, int *visited,
 		debth(edges->dest, visited, action, depth, max_depth);
 		edges = edges->next;
 	}
-
-	return (*max_depth);
 }
 
 /**
