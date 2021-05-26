@@ -61,7 +61,8 @@ int create_edge(vertex_t *src, vertex_t *dest)
 
 /**
  * edge_exists - entry to edge exists
- * Desc: edge_exists function that checks if an edge between two vertices exists
+ * Desc: edge_exists function that checks
+ * if an edge between two vertices exists
  * @src: The src vertex to make the connection from
  * @dest: The destination vertex to connect to
  * Return: 1 if exists,  0 if not exists
@@ -91,7 +92,8 @@ int edge_exists(vertex_t *src, vertex_t *dest)
  * @type: type of the edge to use; UNIDERECTIONAL/BIDIRECTIONAL
  * Return: return 1 in success or 0 on failure.
  */
-int graph_add_edge(graph_t *graph, const char *src, const char *dest, edge_type_t type)
+int graph_add_edge(graph_t *graph, const char *src,
+		   const char *dest, edge_type_t type)
 {
 	vertex_t *source, *destination;
 
