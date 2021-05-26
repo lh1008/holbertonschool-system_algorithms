@@ -4,7 +4,7 @@
  * debth - entry to debth
  * Desc: debth function to traverse a graph
  * using depth-first algorithm
- * @v: pointer vertex node being visited
+ * @vertex: pointer vertex node being visited
  * @visited: array specifying if vertex has been visited
  * @action: function pointer to be called for each visited vertex
  * @depth: current depth
@@ -17,7 +17,7 @@ void debth(vertex_t *vertex, int *visited,
 {
 	edge_t *edges;
 
-	if (visited[vertex->index])
+	if (!vertex || visited[vertex->index])
 		return;
 
 	action(vertex, depth);
