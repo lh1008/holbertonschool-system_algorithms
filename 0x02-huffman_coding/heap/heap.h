@@ -31,4 +31,4 @@ typedef struct heap_s
 	binary_tree_node_t *root;
 } heap_t;
 
-#endif HEAP_H
+#endif /* HEAP_H */
