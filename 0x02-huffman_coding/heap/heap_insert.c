@@ -4,7 +4,7 @@
  * heapify - entry to heapify
  * Desc: heapify function that heapifies a binary tree
  * @heap: pointer to heap
- * @inserted: new node that was just inserted
+ * @node_insert: new node that was just inserted
  * Return: node_insert
  */
 binary_tree_node_t *heapify(heap_t *heap, binary_tree_node_t *node_insert)
@@ -29,7 +29,7 @@ binary_tree_node_t *heapify(heap_t *heap, binary_tree_node_t *node_insert)
 }
 
 /**
- * nth_node - entry to ith_node
+ * ith_node - entry to ith_node
  * Desc: ith_node funtciont that finds ith node of binary tree
  * @root: pointer to root node
  * @i: ith node to find
