@@ -29,4 +29,7 @@ binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 	}
 }
 
-""" https://www.programiz.com/dsa/heap-data-structure """
+"""
+https://www.programiz.com/dsa/heap-data-structure
+https://www.geeksforgeeks.org/insertion-and-deletion-in-heaps/
+"""
