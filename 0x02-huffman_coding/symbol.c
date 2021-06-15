@@ -9,7 +9,7 @@
  */
 symbol_t *symbol_create(char data, size_t freq)
 {
-	symbot_t *node;
+	symbol_t *node;
 
 	node = malloc(sizeof(symbol_t));
 
@@ -19,5 +19,5 @@ symbol_t *symbol_create(char data, size_t freq)
 	node->data = data;
 	node->freq = freq;
 
-	return (NULL);
+	return (node);
 }
