@@ -1,6 +1,7 @@
 #ifndef HUFFMAN_H
 #define HUFFMAN_H
 
+#include "heap/heap.h"
 #include <stddef.h>
 #include <stdlib.h>
 
