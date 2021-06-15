@@ -40,11 +40,11 @@ void shift_down(heap_t *heap)
 		heap->data_cmp(node->right->data,
 			       node->left->data) < 0 && node->left)
 		{
-			swap_nodes(node->right, node);
+			swap_node(node->right, node);
 			largest = node->right;
 		}
 		else if (heap->data_cmp(node->left->data, node->data) <= 0)
-			swap_nodes(node->left, node);
+			swap_node(node->left, node);
 		node = largest;
 	}
 }
