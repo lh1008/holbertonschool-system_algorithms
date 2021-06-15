@@ -27,25 +27,25 @@ binary_tree_node_t *swap_node(binary_tree_node_t *a, binary_tree_node_t *b)
  */
 void shift_down(heap_t *heap)
 {
-	binary_tree_node_t *node = heap->root, *child;
-	void *temp;
+	binary_tree_node_t *largest, *node;
 
-	while (1)
+	if (!heap || !heap->root)
+		return;
+	node = heap->root;
+	while (node->left)
 	{
-		if (!node->left)
-			break;
-		if (!node->right)
-			child = node->left;
-		else
-			child = heap->data_cmp(node->left->data,
-					       node->right->data) <= 0 ?
-				node->left : node->right;
-		if (heap->data_cmp(node->data, child->data) < 0)
-			break;
-		temp = node->data;
-		node->data = child->data;
-		child->data = temp;
-		node = child;
+		largest = node->left;
+		if (node->right && heap->data_cmp(node->data,
+						  node->right->data) >= 0 &&
+		heap->data_cmp(node->right->data,
+			       node->left->data) < 0 && node->left)
+		{
+			swap_nodes(node->right, node);
+			largest = node->right;
+		}
+		else if (heap->data_cmp(node->left->data, node->data) <= 0)
+			swap_nodes(node->left, node);
+		node = largest;
 	}
 }
 
