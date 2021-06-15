@@ -1,8 +1,8 @@
 #include "heap.h"
 
 /**
- * swap_nodes - entry to swap nodes
- * Desc: swap_nodes function to swap data of two specified nodes
+ * swap_node - entry to swap nodes
+ * Desc: swap_node function to swap data of two specified nodes
  * @a: pointer to first node
  * @b: pointer to second node
  * Return: pointer containing 'a' node data
@@ -20,7 +20,7 @@ binary_tree_node_t *swap_node(binary_tree_node_t *a, binary_tree_node_t *b)
 }
 
 /**
- * sift_down - entry to shift down
+ * shift_down - entry to shift down
  * Desc: shift_down function to heapify subtree
  * @heap: pointer to heap to heapify
  * Return: nothing, void function
