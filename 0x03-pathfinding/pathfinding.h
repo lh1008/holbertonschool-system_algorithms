@@ -1,6 +1,12 @@
 #ifndef PATHFINDING_H
 #define PATHFINDING_H
 
+#include "graphs.h"
+#include "queues.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 /**
  * struct point_s - Structure storing coordinates
  *

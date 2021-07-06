@@ -14,4 +14,29 @@
  */
 queue_t *backtracking_array(char **map, int rows, int cols, point_t const *start, point_t const *target)
 {
+	char *mapper = *map;
+	int r = rows, c = cols;
+	point_t *box;
+	queue_t *q_box;
+
+	box = malloc(sizeof(point_t));
+	if (!box)
+		return (NULL);
+	box->x = r;
+	box->y = c;
+
+	q_box = malloc(sizeof(queue_t));
+	if (!q_box)
+		return (NULL);
+
+	if (mapper == NULL)
+	{
+		return (NULL);
+	}
+
+	if (box == start || box == target)
+		return (q_box);
+	printf("%s\n", mapper);
+	return (q_box);
+
 }
