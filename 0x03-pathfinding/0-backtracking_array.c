@@ -3,7 +3,7 @@
 #include "queues.h"
 
 /**
- * backtracking - entry to backtracking
+ * back_track - entry to backtracking
  * Desc: backtracking function that makes a recursive backtracking
  * to find the first working path from start to target
  * @map: double pointer
@@ -16,7 +16,7 @@
  * @path: pointet to path from recursive backtracking
  * Return: 1
  */
-int backtracking(char **map, int x, int y,  int rows, int cols,
+int back_track(char **map, int x, int y,  int rows, int cols,
 		 point_t const *start, point_t const *target, queue_t **path)
 {
 	int right = 0, bottom = 0, left = 0, up = 0;
@@ -36,21 +36,21 @@ int backtracking(char **map, int x, int y,  int rows, int cols,
 	}
 	if (x + 1 < cols)
 		if (map[y][x + 1] == '0')
-			right = backtracking((char **)map, x + 1, y,
+			right = back_track((char **)map, x + 1, y,
 					     rows, cols, start, target, path);
 	if (y + 1 < rows)
 		if (map[y + 1][x] == '0' && right != 1)
-			bottom = backtracking((char **)map, x, y + 1,
+			bottom = back_track((char **)map, x, y + 1,
 					      rows, cols, start, target, path);
 	if (x - 1 >= 0)
 		if (map[y][x - 1] == '0' && right != 1
 		    && bottom != 1)
-			left = backtracking((char **)map, x - 1, y,
+			left = back_track((char **)map, x - 1, y,
 					    rows, cols, start, target, path);
 	if (y - 1 >= 0)
 		if (map[y - 1][x] == '0' && right != 1
 		    && bottom != 1 && left != 1)
-			up = backtracking((char **)map, x, y - 1,
+			up = back_track((char **)map, x, y - 1,
 					  rows, cols, start, target, path);
 	if (right == 0 && bottom == 0 && left == 0 && up == 0)
 	{
@@ -67,13 +67,14 @@ int backtracking(char **map, int x, int y,  int rows, int cols,
  * starting point to a target point within a two-dimensional array
  * @map: pointer to a read-only two-dimensional array
  * @rows: rows of map
- * @col: columns of map
+ * @cols: columns of map
  * @start: data structure to store the cordinates of the starting point
  * @target: data structure to store the cordinates of the target point
  * Return: return a queue, in which each node is a point in path
  * from start to target
  */
-queue_t *backtracking_array(char **map, int rows, int cols, point_t const *start, point_t const *target)
+queue_t *backtracking_array(char **map, int rows, int cols,
+			    point_t const *start, point_t const *target)
 {
 	queue_t *path;
 	int x, y, i, ret;
@@ -96,7 +97,7 @@ queue_t *backtracking_array(char **map, int rows, int cols, point_t const *start
 		return (0);
 	x = start->x;
 	y = start->y;
-	ret = backtracking(map2, x, y, rows, cols, start, target, &path);
+	ret = back_track(map2, x, y, rows, cols, start, target, &path);
 	if (!ret)
 		queue_delete(path), path = NULL;
 	for (i = 0; i < rows; i++)
