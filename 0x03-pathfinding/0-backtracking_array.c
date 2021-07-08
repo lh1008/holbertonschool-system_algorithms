@@ -1,4 +1,65 @@
 #include "pathfinding.h"
+#include "graphs.h"
+#include "queues.h"
+
+/**
+ * backtracking - entry to backtracking
+ * Desc: backtracking function that makes a recursive backtracking
+ * to find the first working path from start to target
+ * @map: double pointer
+ * @x: int x
+ * @y: int y
+ * @rows: int rows
+ * @cols: int cols
+ * @start: const structure start
+ * @target: const structure target
+ * @path: pointet to path from recursive backtracking
+ * Return: 1
+ */
+int backtracking(char **map, int x, int y,  int rows, int cols,
+		 point_t const *start, point_t const *target, queue_t **path)
+{
+	int right = 0, bottom = 0, left = 0, up = 0;
+	point_t *current;
+
+	current = malloc(sizeof(*current));
+	if (!current)
+		return (0);
+	current->x = x;
+	current->y = y;
+	printf("Checking coordinates [%i, %i]\n", x, y);
+	map[y][x] = '1';
+	if (target->x == x && target->y == y)
+	{
+		queue_push_front(*path, current);
+		return (1);
+	}
+	if (x + 1 < cols)
+		if (map[y][x + 1] == '0')
+			right = backtracking((char **)map, x + 1, y,
+					     rows, cols, start, target, path);
+	if (y + 1 < rows)
+		if (map[y + 1][x] == '0' && right != 1)
+			bottom = backtracking((char **)map, x, y + 1,
+					      rows, cols, start, target, path);
+	if (x - 1 >= 0)
+		if (map[y][x - 1] == '0' && right != 1
+		    && bottom != 1)
+			left = backtracking((char **)map, x - 1, y,
+					    rows, cols, start, target, path);
+	if (y - 1 >= 0)
+		if (map[y - 1][x] == '0' && right != 1
+		    && bottom != 1 && left != 1)
+			up = backtracking((char **)map, x, y - 1,
+					  rows, cols, start, target, path);
+	if (right == 0 && bottom == 0 && left == 0 && up == 0)
+	{
+		free(current);
+		return (0);
+	}
+	queue_push_front(*path, current);
+	return (1);
+}
 
 /**
  * backtracking_array - entry to backtracking array
@@ -14,29 +75,32 @@
  */
 queue_t *backtracking_array(char **map, int rows, int cols, point_t const *start, point_t const *target)
 {
-	char *mapper = *map;
-	int r = rows, c = cols;
-	point_t *box;
-	queue_t *q_box;
+	queue_t *path;
+	int x, y, i, ret;
+	char **map2;
 
-	box = malloc(sizeof(point_t));
-	if (!box)
+	if (!map || !*map || !start || !target || rows < 1 || cols < 1)
 		return (NULL);
-	box->x = r;
-	box->y = c;
-
-	q_box = malloc(sizeof(queue_t));
-	if (!q_box)
-		return (NULL);
-
-	if (mapper == NULL)
+	map2 = malloc(rows * sizeof(char *));
+	if (!map2)
+		exit(1);
+	for (i = 0; i < rows; i++)
 	{
-		return (NULL);
+		map2[i] = malloc(cols + 1);
+		if (!map2[i])
+			exit(1);
+		strcpy(map2[i], map[i]);
 	}
-
-	if (box == start || box == target)
-		return (q_box);
-	printf("%s\n", mapper);
-	return (q_box);
-
+	path = queue_create();
+	if (path == NULL)
+		return (0);
+	x = start->x;
+	y = start->y;
+	ret = backtracking(map2, x, y, rows, cols, start, target, &path);
+	if (!ret)
+		queue_delete(path), path = NULL;
+	for (i = 0; i < rows; i++)
+		free(map2[i]);
+	free(map2);
+	return (path);
 }
