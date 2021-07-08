@@ -6,7 +6,8 @@ static queue_t *g_path;
 static char *g_visited;
 
 /**
- * dfs_backtracking - DFS backtracking path logic
+ * backtrack_graph - entry to backtrack graph
+ * Desc: backtrack_graph function to bracktrack visited cities
  * @vertex: current vertex to traverse
  * Return: 1 if destination found else 0
  */
