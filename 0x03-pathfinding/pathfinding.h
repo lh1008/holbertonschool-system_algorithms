@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ULONG_MAX 0xFFFFFFFFUL
+
 /**
  * struct point_s - Structure storing coordinates
  *

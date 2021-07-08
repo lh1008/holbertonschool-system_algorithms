@@ -1,146 +1,124 @@
 #include "pathfinding.h"
 
 /**
- * get_vertex_index - A function that fetches an vertex existing in graph by
- * name
- * @graph: A pointer to the graph
- * @index: The index identifying the vertex
- * Return: vertex on success,  NULL on failure
+ * get_min_distance - entry to get min distance
+ * Desc: get_min_distance function finds the vertex with
+ * lowest distance from source
+ * @graph: pointer to graph
+ * @distance: array of distances from start vertex
+ * @visited: array of if vertex has been visited
+ * @index: current index
+ * Return: index with minimum distance or NULL
  */
-vertex_t *get_vertex_index(const graph_t *graph, size_t index)
+vertex_t *get_min_distance(graph_t *graph, size_t *distance, size_t *visited,
+		size_t *index)
 {
-	vertex_t *node;
+	size_t min = ULONG_MAX;
+	size_t i;
+	vertex_t *vertex;
 
-	if (index > NBVERTICES)
+	vertex = graph->vertices;
+	if (vertex == NULL)
 		return (NULL);
-	node = VERTICES;
-	if (node == NULL)
-		return (NULL);
-	while (node != NULL)
-	{
-		if (node->index == index)
-		{
-			return (node);
-		}
-		node = node->next;
-	}
-	return (NULL);
-}
 
-/**
- * get_smallest - A function that fetches index of vertex with smallest
- * tentative distance among the nodes in the unsaw
- * @graph: A pointer to the graph
- * @dest:  The array to track the distances from start to a vertex
- * @v: The array to track if vertex is saw or not
- * @index: The index with minimun identifying the vertex with minimum
- * tentative distance
- *
- * Return: minimum tentative distance among the nodes in the unsaw
- */
-size_t get_smallest(graph_t *graph, size_t *dest, size_t *v, size_t *index)
-{
-	size_t min = INFIN;
-	size_t *a = dest;
-	size_t i = 0;
+	*index = ULONG_MAX;
 
-	while (i < graph->nb_vertices)
+	for (i = 0; i < graph->nb_vertices; i++)
 	{
-		if (*a < min && v[i] == UNEXP)
+		if (visited[i] == 0 && min > distance[i])
 		{
-			min = *a;
+			min = distance[i];
 			*index = i;
 		}
-		a++;
-		i++;
 	}
-	return (min);
-}
+	if (*index == ULONG_MAX)
+		return (NULL);
 
-/**
- * queue_charge - A function that charges the queue with the shortest path
- * @graph: A pointer to the graph
- * @queue: queue to be filled in
- * @parent: The array to track parents of vertices
- * @start: A pointer to the starting vertex
- * @target: A pointer to the target vertex
- *
- * Return: Nothing
- */
-void queue_charge(graph_t *graph, queue_t *queue, char **parent,
-	vertex_t const *start, vertex_t const *target)
-{
-	size_t i = 0, t = 0;
-	vertex_t *v;
-
-	t = target->index;
-	if (parent[t])
+	while (vertex->next)
 	{
-		queue_push_front(queue, strdup(target->content));
-		while (strcmp(parent[t], start->content))
-		{
-			queue_push_front(queue, strdup(parent[t]));
-			v = VERTICES;
-			for (i = 0; i < NBVERTICES && v; i++)
-			{
-				if (strcmp(v->content, parent[t]) == 0)
-				{
-					t = i;
-					break;
-				}
-				v = v->next;
-			}
-		}
-		queue_push_front(queue, strdup(start->content));
+		if (vertex->index == *index)
+			return (vertex);
+		vertex = vertex->next;
 	}
+	return (vertex);
 }
 
-/**
- * find_path - Uses dijkstra algorithm to find the path
- * @graph: pointer to the graph to go through
- * @saw: The array to track if vertex is saw or not
- * @parent: The array to track parents of vertices
- * @dest:  The array to track the distances from start to a vertex
- * @start: A pointer to the starting vertex
- * @target: A pointer to the target vertex
- * @index: index of a current vertex tracked
- */
-void find_path(graph_t *graph, size_t *saw, char **parent,
-	size_t *dest, const vertex_t *start, const vertex_t *target, size_t index)
-{
-	vertex_t *curr, *child;
-	edge_t *edge;
-	size_t smallest = INFIN, alt;
 
-	curr = get_vertex_index(graph, index);
-	if (!curr)
+/**
+ * insert_into_queue - entry to insert into queue
+ * Desc: insert_into_queue inserts vertices into queue
+ * @graph: pointer to graph with vertices
+ * @path: pointer to path array
+ * @path_via: pointer to path_via node
+ * @start: start vertex
+ * @target: target vertex
+ * Return: void
+ */
+void insert_into_queue(graph_t *graph, queue_t *path, vertex_t **path_via,
+			vertex_t const *start, vertex_t const *target)
+{
+	size_t i = target->index;
+
+	if (!path_via[i])
 		return;
-	edge = curr->edges;
-	printf("Checking %s, distance from %s is %ld\n", curr->content,
-	       start->content, dest[index]);
-	while (edge && saw[index] == UNEXP)
+
+	if (!queue_push_front(path, strdup(target->content)))
+		queue_delete(path);
+
+	while (path_via[i] && i < graph->nb_vertices)
 	{
-		child = edge->dest;
-		alt = dest[index] + edge->weight;
-		if (child && (dest[child->index] > alt))
+		if (!queue_push_front(path, strdup(path_via[i]->content)))
+			queue_delete(path);
+		i = path_via[i]->index;
+		if (i == start->index)
+			return;
+	}
+}
+
+
+/**
+ * recursive_dijkstra - entry to recursive dijkstra
+ * Desc: recursive utility to find shortest path using Dijkstra
+ * @graph: pointer to graph to go through
+ * @distance: array of distances from start vertex
+ * @visited: keeps track of which vertices have been visited
+ * @path_via: keeps track of path_via nodes for each vertex
+ * @start: pointer to starting vertex
+ * @target: pointer to target vertex
+ * @idx: pointer to current index
+ * Return: queue of shortest path or NULL
+ */
+void recursive_dijkstra(graph_t *graph, size_t *distance, size_t *visited,
+							vertex_t **path_via, vertex_t const *start,
+							vertex_t const *target, size_t idx)
+{
+	vertex_t *current;
+	edge_t *edge;
+	size_t i = 0, temp;
+
+	current = get_min_distance(graph, distance, visited, &idx);
+	if (!current)
+		return;
+
+	printf("Checking %s, distance from %s is %ld\n", current->content,
+			start->content, distance[current->index]);
+	i = current->index;
+	edge = current->edges;
+	while (edge && visited[i] == 0)
+	{
+		temp = distance[i] + edge->weight;
+		if (distance[edge->dest->index] > temp)
 		{
-			dest[child->index] = dest[index] + edge->weight;
-			if (parent[child->index])
-			{
-				free(parent[child->index]);
-				parent[child->index] = NULL;
-			}
-			parent[child->index] = strdup(curr->content);
+			distance[edge->dest->index] = distance[i] + edge->weight;
+			path_via[edge->dest->index] = current;
 		}
 		edge = edge->next;
 	}
-	saw[index] = EXP;
-	smallest = get_smallest(graph, dest, saw, &index);
-	if (saw[target->index] == EXP || smallest == INFIN)
+	visited[i] = 1;
+	if (visited[target->index] == 1)
 		return;
 
-	find_path(graph, saw, parent, dest, start, target,
-		index);
+	recursive_dijkstra(graph, distance, visited, path_via, start, target, idx);
 }
 
 /**
@@ -155,38 +133,44 @@ void find_path(graph_t *graph, size_t *saw, char **parent,
 queue_t *dijkstra_graph(graph_t *graph, vertex_t const *start,
 			vertex_t const *target)
 {
-	queue_t *queue;
-	size_t *dest, i, *saw;
-	char **parent;
+	size_t i, *distance = 0, *visited = 0;
+	queue_t *queue = NULL;
+	vertex_t **path_via = NULL;
 
-	if (graph != NULL)
+	if (!graph || !start || !target)
+		return (NULL);
+
+	visited = calloc(graph->nb_vertices, sizeof(*visited));
+	if (!visited)
+		return (NULL);
+	path_via = calloc(graph->nb_vertices, sizeof(**path_via));
+	if (!path_via)
 	{
-		queue = queue_create();
-		saw = (size_t *)malloc(graph->nb_vertices * sizeof(size_t));
-		parent = (char **)malloc(graph->nb_vertices * sizeof(char *));
-		dest = (size_t *) malloc(graph->nb_vertices * sizeof(size_t));
-		for (i = 0; i < graph->nb_vertices; i++)
-		{
-			dest[i] = INFIN;
-			saw[i] = UNEXP;
-			parent[i] = NULL;
-		}
-		dest[start->index] = 0;
-		find_path(graph, saw, parent, dest, start, target,
-				 start->index);
-		queue_charge(graph, queue, parent, start, target);
-		free(saw);
-		free(dest);
-		for (i = 0; i < graph->nb_vertices; i++)
-		{
-			free(parent[i]);
-		}
-		free(parent);
-		if (!queue->front)
-		{
-			free(queue);
-			queue = NULL;
-		}
+		free(visited);
+		return (NULL);
+	}
+	distance = malloc(graph->nb_vertices * sizeof(*distance));
+	if (!distance)
+	{
+		free(visited);
+		free(path_via);
+		return (NULL);
+	}
+	for (i = 0; i < graph->nb_vertices; i++)
+		distance[i] = ULONG_MAX;
+
+	queue = queue_create();
+	distance[start->index] = 0;
+	recursive_dijkstra(graph, distance, visited, path_via, start, target, 0);
+
+	insert_into_queue(graph, queue, path_via, start, target);
+	free(visited);
+	free(distance);
+	free(path_via);
+	if (!queue->front)
+	{
+		free(queue);
+		return (NULL);
 	}
 	return (queue);
 }
