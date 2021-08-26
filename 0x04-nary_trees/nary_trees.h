@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX(a, b) ((a > b) ? a : b)
+
 /**
  * struct nary_tree_s - N-ary tree node structure
  *
