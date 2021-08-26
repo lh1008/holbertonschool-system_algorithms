@@ -37,8 +37,8 @@ size_t get_depth_nary(nary_tree_t const *root, size_t d,
  * @action: pointer to function to traverse each node
  * Return: biggest depth of the tree pointed to by root
  */
-size_t nary_tree_traverse(nary_tree_t const *root,
-			  void (*action)(nary_tree_t const *node, size_t depth))
+size_t nary_tree_traverse(nary_tree_t const *root, void
+			  (*action)(nary_tree_t const *node, size_t depth))
 {
 	if (root == NULL)
 		return (0);
