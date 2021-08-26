@@ -5,7 +5,7 @@
 
 void print_node(nary_tree_t const *node, size_t depth)
 {
-    printf("%*s%s\n", (int)depth * 2, "", node->content);
+	printf("%*s%s\n", (int)depth * 2, "", node->content);
 }
 
 int main(void)
